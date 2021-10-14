@@ -16,7 +16,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-// import TablePagination from '@mui/material/TablePagination';
+import { Hidden } from '@material-ui/core'
+import TablePagination from '@mui/material/TablePagination';
 
 // Styling from MUI
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -24,6 +25,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
       backgroundColor: "#464444",
       color: theme.palette.common.white,
       fontSize: 18,
+      overflow: Hidden,
     },
     [`&.${tableCellClasses.body}`]: {
       fontSize: 20,
@@ -46,7 +48,19 @@ const Home = () => {
     // custom hook for fetching data
     const res = useFetch("https://restcountries.com/v2/all", {})
     const [filters, setFilters] = useState('')
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);  //set initial the rows per page to 5
     // console.log(res.response)
+
+    // Function to handle next page click
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+    
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
+    };
 
     // take the value of the input
     const filterChange = (event) => {
@@ -68,44 +82,56 @@ const Home = () => {
             <input className="search" placeholder="Search country..." value={filters} onChange={filterChange}/>
             {/* Using of MUI Table  */}
             <TableContainer component={Paper} style={{borderRadius: "0"}}>
-                <Table sx={{ minWidth: 400}} aria-label="customized table">
+                <Table sx={{ minWidth: 200}} aria-label="customized table">
                     <TableHead>
-                    <TableRow>
-                        <StyledTableCell>Flag</StyledTableCell>
-                        <StyledTableCell align="left">Name</StyledTableCell>
-                        <StyledTableCell align="right">Population</StyledTableCell>
-                        <StyledTableCell align="right">Lang</StyledTableCell>
-                        <StyledTableCell align="right">Region</StyledTableCell>
-                    </TableRow>
+                        <TableRow>
+                            <StyledTableCell>Flag</StyledTableCell>
+                            <StyledTableCell align="left">Name</StyledTableCell>
+                            <StyledTableCell align="left">Population</StyledTableCell>
+                            <StyledTableCell align="left">Lang</StyledTableCell>
+                            <StyledTableCell align="left">Region</StyledTableCell>
+                        </TableRow>
                     </TableHead>
                     <TableBody>
-                    {list.map((row) => (
+                    {list
+                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        .map((row) => (
                         <StyledTableRow key={row.name}>
-                        <StyledTableCell component="th" scope="row">
-                            {/* {row.flag} */}
-                            {
-                                <img src={row.flag} alt="#"/>
-                            }
-                        </StyledTableCell>
-                        <StyledTableCell align="left">{row.name}</StyledTableCell>
-                        <StyledTableCell align="right">{numeral(row.population).format("0,0")}</StyledTableCell>
-                        <StyledTableCell align="right">
-                            {
-                                <ul>
-                                {row.languages.map(note => 
-                                    <li key={note.name}>
-                                        {note.name}
-                                    </li>
-                                )}
-                            </ul>
-                            }
-                        </StyledTableCell>
-                        <StyledTableCell align="right">{row.region}</StyledTableCell>
+                            <StyledTableCell component="th" scope="row">
+                                {/* {row.flag} */}
+                                {
+                                    <img src={row.flag} alt="#"/>
+                                }
+                            </StyledTableCell>
+                            <StyledTableCell align="left">{row.name}</StyledTableCell>
+                            <StyledTableCell align="left">{numeral(row.population).format("0,0")}</StyledTableCell>
+                            <StyledTableCell align="left">
+                                {
+                                    <ul>
+                                    {row.languages.map(note => 
+                                        <li key={note.name}>
+                                            {note.name}
+                                        </li>
+                                    )}
+                                </ul>
+                                }
+                            </StyledTableCell>
+                        <StyledTableCell align="left">{row.region}</StyledTableCell>
                         </StyledTableRow>
                     ))}
                     </TableBody>
                 </Table>
             </TableContainer>
+            {/* Adding the Pagination */}
+            <TablePagination
+                rowsPerPageOptions={[5, 10, 20, 250]}
+                component="div"
+                count={list.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+            />
         </div>
     )
 }
