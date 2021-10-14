@@ -5,7 +5,7 @@ Work individually to finish this assignment. You can ask for help from your pair
 ## Assignment
 
 Do the assignment as shown in the demo. reference the below image for design.
-Also you can use custom hook for fetching data if you like.
+Use custom hook for fetching data if you like.
 Also create a functional search bar, which will search for the countries. (could be implemented inside the fetch use effect)
 
 
