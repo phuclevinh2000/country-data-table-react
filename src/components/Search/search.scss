@@ -1,0 +1,14 @@
+.search {
+    height: 30px;
+    width: 400px;
+    // background-color: red;
+    // color: white;
+    border: none;
+    padding-left: 20px;
+    font-size: 20px;
+
+    ::placeholder {
+        color: white;
+        opacity: 1;
+    }
+}

@@ -1,0 +1,10 @@
+@import "../../mixins";
+
+.ityped {
+    display: flex;
+    color: white;
+
+    @include mobile {
+        display: none;
+    }
+}
